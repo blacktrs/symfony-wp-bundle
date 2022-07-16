@@ -1,0 +1,37 @@
+{
+    "name": "blacktrs/symfony-wp-bundle",
+    "version": "1.0.0",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Blacktrs\\WPBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Blacktrs\\WPBundle\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Taras Chornyi",
+            "email": "taras.chr@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=8.1",
+        "doctrine/orm": "^2.12",
+        "symfony/dependency-injection": "^6.1",
+        "symfony/routing": "^6.1",
+        "symfony/http-kernel": "^6.1",
+        "symfony/framework-bundle": "^6.1",
+        "twig/twig": "^3.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^1.8",
+        "friendsofphp/php-cs-fixer": "^3.9"
+    }
+}
