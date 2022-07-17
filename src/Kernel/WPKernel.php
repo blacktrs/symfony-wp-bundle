@@ -58,7 +58,7 @@ abstract class WPKernel extends Kernel
             add_filter("{$type}_template", $this->resolveTemplateRequest(...), 1000, 3);
         }
 
-        add_action('rest_api_init', $this->resolveRestRequest(...));
+        add_action('rest_api_init', $this->resolveRestRequest(...), PHP_INT_MAX - 1000);
     }
 
     /**
@@ -68,7 +68,7 @@ abstract class WPKernel extends Kernel
     {
         $request = Request::createFromGlobals();
 
-        $templates = array_map(fn (string $template): string => '/'.$template, (array)$templates);
+        $templates = array_map(fn (string $template): string => '/' . $template, (array)$templates);
 
         $request->attributes->set('_templates', $templates);
 
@@ -80,6 +80,16 @@ abstract class WPKernel extends Kernel
     private function resolveRestRequest(): void
     {
         $request = Request::createFromGlobals();
+        $path = substr($request->getRequestUri(), strlen(rest_get_url_prefix()) + 1);
+
+        foreach (array_keys(rest_get_server()->get_routes()) as $route) {
+            preg_match('@^' . $route . '$@i', $path, $matches);
+
+            if (!empty($matches)) {
+                return;
+            }
+        }
+
         $request->attributes->set('_rest_api', true);
         $this->handleHttpKernel($request);
     }
