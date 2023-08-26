@@ -6,20 +6,18 @@ namespace Blacktrs\WPBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\{Route, RouteCollection};
+use Symfony\Component\Routing\Matcher\{RequestMatcherInterface, UrlMatcherInterface};
+use Symfony\Component\Routing\Exception\{MethodNotAllowedException, ResourceNotFoundException};
+use Symfony\Component\DependencyInjection\{Container, ContainerInterface};
+use Symfony\Component\HttpKernel\Exception\{MethodNotAllowedHttpException, NotFoundHttpException};
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
-use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
+use Exception;
+
+use function strlen;
 
 class RouterListener implements EventSubscriberInterface
 {
@@ -32,7 +30,7 @@ class RouterListener implements EventSubscriberInterface
     /**
      * @param Container $container
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(ContainerInterface $container, private readonly ?LoggerInterface $logger = null)
     {
@@ -103,7 +101,7 @@ class RouterListener implements EventSubscriberInterface
         $path = $this->getValidTemplatePath($templates);
 
         if ($request->attributes->has('_rest_api')) {
-            $pathInfo = substr($pathInfo, \strlen('/'.$this->apiPrefix));
+            $pathInfo = substr($pathInfo, strlen('/'.$this->apiPrefix));
         }
 
         // add attributes based on the request (routing)
@@ -153,8 +151,14 @@ class RouterListener implements EventSubscriberInterface
             return null;
         }
 
-        $paths = array_filter($paths, fn (string $path): bool => array_filter($this->collection->all(), fn (Route $route): bool => $route->getPath() === $path) !== []);
-
+        $paths = array_filter(
+            $paths,
+            fn (string $path): bool =>
+                array_filter(
+                    $this->collection->all(),
+                    fn (Route $route): bool => $route->getPath() === $path
+                ) !== []
+        );
         $paths = array_values($paths);
 
         if (empty($paths)) {

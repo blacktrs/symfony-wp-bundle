@@ -1,6 +1,7 @@
 {
     "name": "blacktrs/symfony-wp-bundle",
-    "version": "1.0.1",
+    "description": "The Symfony bundle to connect with WordPress",
+    "version": "1.1.0",
     "type": "symfony-bundle",
     "license": "MIT",
     "autoload": {
@@ -22,16 +23,30 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=8.1",
-        "doctrine/orm": "^2.12",
-        "symfony/dependency-injection": "^6.1",
-        "symfony/routing": "^6.1",
-        "symfony/http-kernel": "^6.1",
-        "symfony/framework-bundle": "^6.1",
-        "twig/twig": "^3.4"
+        "doctrine/orm": "^2",
+        "symfony/dependency-injection": "^6.3",
+        "symfony/routing": "^6.3",
+        "symfony/http-kernel": "^6.3",
+        "symfony/framework-bundle": "^6.3",
+        "twig/twig": "^3",
+        "symfony/yaml": "^6.3",
+        "symfony/filesystem": "^6.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5",
-        "phpstan/phpstan": "^1.8",
-        "friendsofphp/php-cs-fixer": "^3.9"
+        "phpunit/phpunit": "^10",
+        "phpstan/phpstan": "^1.10",
+        "friendsofphp/php-cs-fixer": "^3",
+        "szepeviktor/phpstan-wordpress": "^1.3",
+        "phpstan/extension-installer": "^1.3",
+        "phpstan/phpstan-symfony": "^1.3",
+        "symfony/test-pack": "^1.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "scripts": {
+        "test": ["phpstan --memory-limit=1G", "php-cs-fixer fix --dry-run", "phpunit"]
     }
 }

@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Blacktrs\WPBundle\Kernel;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Kernel;
+
+use function strlen;
 
 abstract class WPKernel extends Kernel
 {
