@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Blacktrs\WPBundle\Service\Salt\SaltGeneratorInterface:
+        class: Blacktrs\WPBundle\Service\Salt\DefaultSaltGenerator
+
+    Blacktrs\WPBundle\Service\Salt\KeySaltProviderInterface:
+        class: Blacktrs\WPBundle\Service\Salt\KeySaltProvider
+        public: true

@@ -6,6 +6,7 @@ namespace Blacktrs\WPBundle;
 
 use Blacktrs\WPBundle\Command\WPSaltsGeneratorCommand;
 use Blacktrs\WPBundle\EventListener\RouterListener;
+use Blacktrs\WPBundle\Service\Salt\KeySaltProviderInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -22,21 +23,23 @@ class WpBundle extends AbstractBundle
     {
         $container->services()
             ->load('Blacktrs\\WPBundle\\', '../src/*')
-            ->exclude(['../src/stubs.php'])
-            ->set('wp_bundle.listener', RouterListener::class)
-            ->public()
-            ->args(
+            ->set('wp_bundle.listener', RouterListener::class)->public()->args(
                 [
                     service('service_container'),
                     service('logger')->ignoreOnInvalid()
                 ]
             )
             ->tag('kernel.event_subscriber')
-            ->tag('monolog.logger', ['channel' => 'request']);
+            ->tag('monolog.logger', ['channel' => 'request'])
+        ;
+
+        $container->import('../config/services.yaml');
     }
 
-    public function registerCommands(Application $application)
+    public function registerCommands(Application $application): void
     {
-        $application->add(new WPSaltsGeneratorCommand());
+        $application->add(
+            new WPSaltsGeneratorCommand($this->container->get(KeySaltProviderInterface::class))
+        );
     }
 }
